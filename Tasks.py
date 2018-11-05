@@ -1,4 +1,4 @@
-class Task(object):
+class task(object):
 
     """Class for containing a boss, classification and number of points"""
 
@@ -40,7 +40,7 @@ class Task(object):
         Parameters
         ----------
         group_options: boolean
-            True is the group option is enabled, false otherwise
+            True if the group option is enabled, false otherwise
 
         Returns
         -------
