@@ -74,3 +74,38 @@ class task_list(object):
         print(color.BOLD + 'Bosses to Skip:' + color.END)
         for boss in self._skip_list:
                 print(boss)
+
+    def skip_min_points(self):
+        """ Move the lowest point task from do to skip
+        """
+        min = 100
+        for key, value in self._do_list.items():
+            if value.get_points(2) < min:
+                min = value.get_points(2)
+                task = (key, value)
+        self._do_list.pop(task[0])
+        self._skip_list.update({task[0]: task[1]})
+
+    def avg_value(self, num_options, choice):
+        """ Find the average value of the do tasks
+        """
+        Sum = 0
+        for key, value in self._do_list.items():
+            Sum += value.get_points(num_options)
+        if self.get_num_do() == 0:
+            return(-1)
+        avg = Sum/(1.0*self.get_num_do())
+        if choice:
+            max = 0
+            for key, value in self._do_list.items():
+                if value.get_points(num_options) > max:
+                    max = value.get_points(num_options)
+            return(avg*0.9 + max*0.1)
+        else:
+            return(Sum/(1.0*self.get_num_do()))
+
+    def get_num_do(self):
+        return(len(self._do_list))
+
+    def get_num_skip(self):
+        return(len(self._skip_list))

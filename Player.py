@@ -1,4 +1,8 @@
 from Task_List import task_list
+import Probability_Calculator as pc
+from copy import copy, deepcopy
+from Color import color
+
 
 class player(object):
 
@@ -49,7 +53,7 @@ class player(object):
         else:
             print("Reaper's choice is not unlocked")
 
-    def create_lists(self, skip_tasks):
+    def create_lists(self, skip_tasks=[]):
         """ Creates the player's task list
 
         Parameters
@@ -62,7 +66,25 @@ class player(object):
     def optimize_lists(self):
         """ Optimize the players skip list based on their preferences
         """
-        pass
+        num_options = 0
+        if self._group:
+            num_options += 1
+        if self._extended:
+            num_options += 1
+        num_tasks = self._tasks.get_num_do() + self._tasks.get_num_skip()
+        value = 0
+        for i in range(self._tasks.get_num_skip(), num_tasks):
+            avg = self._tasks.avg_value(num_options, self._choice)
+            E = pc.expected_value(avg, self._tasks.get_num_do(),
+                                  self._tasks.get_num_skip())
+            if E >= value:
+                value = E
+                self._optimized_list = deepcopy(self._tasks)
+            self._tasks.skip_min_points()
+
+        print(color.BOLD + 'Expected Value: ' + color.END + str(value))
+        print('')
+        self._optimized_list.print_lists()
 
     def print_expected_values(self):
         """ Print the expected value for some specific case
